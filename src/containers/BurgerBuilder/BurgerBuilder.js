@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Burger from "../../components/Burger/Burger";
@@ -16,27 +16,31 @@ const burgerBuilder = (props) => {
   //     super(props);
   //     this.state = {...}
   // }
-
   const [purchasing, setPurchasing] = useState(false);
 
   const dispatch = useDispatch();
 
-  const ings = useSelector(state => {
+  const ings = useSelector((state) => {
     return state.burgerBuilder.ingredients;
   });
+  const price = useSelector((state) => state.burgerBuilder.totalPrice);
+  const error = useSelector((state) => state.burgerBuilder.error);
+  const isAuthenticated = useSelector((state) => state.auth.token !== null);
 
-  const price = useSelector(state => state.burgerBuilder.totalPrice);
-  const error = useSelector(state => state.burgerBuilder.error);
-  const isAuthenticated = useSelector(state => state.auth.token !== null);
-
-  const onIngredientAdded = ingName => dispatch(actions.addIngredient(ingName));
-  const onIngredientRemoved = ingName => dispatch(actions.removeIngredient(ingName));
-  const onInitIngredients = useCallback(() => dispatch(actions.initIngredients()), [dispatch]);
+  const onIngredientAdded = (ingName) =>
+    dispatch(actions.addIngredient(ingName));
+  const onIngredientRemoved = (ingName) =>
+    dispatch(actions.removeIngredient(ingName));
+  const onInitIngredients = useCallback(
+    () => dispatch(actions.initIngredients()),
+    [dispatch]
+  );
   const onInitPurchase = () => dispatch(actions.purchaseInit());
-  const onSetAuthRedirectPath = path => dispatch(actions.setAuthRedirectPath(path));
+  const onSetAuthRedirectPath = (path) =>
+    dispatch(actions.setAuthRedirectPath(path));
 
   useEffect(() => {
-     onInitIngredients();
+    onInitIngredients();
   }, [onInitIngredients]);
 
   const updatePurchaseState = (ingredients) => {
@@ -111,6 +115,5 @@ const burgerBuilder = (props) => {
     </Auxiliary>
   );
 };
-
 
 export default withErrorHandler(burgerBuilder, axios);
